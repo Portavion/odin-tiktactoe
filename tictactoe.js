@@ -186,7 +186,7 @@ const checkEngine = (function() {
 
     function checkLine(board){
         for (let i = 0; i < 2; i++){
-            if ((board[i][0]===board[i][1]) & (board[i][0]===board[i][2])){
+            if ((board[i][0]===board[i][1]) & (board[i][0]===board[i][2]) & (board[i][0] != ' ')){
                 return [1, board[i][0]];
             }
             else {
@@ -197,7 +197,7 @@ const checkEngine = (function() {
 
     function checkColumn(board){
         for (let i = 0; i < 2; i++){
-            if ((board[0][i]===board[1][i]) & (board[0][i]===board[2][i])){
+            if ((board[0][i]===board[1][i]) & (board[0][i]===board[2][i]) & (board[0][i] != ' ')){
                 return [1, board[0][i]];
             }
             else {
