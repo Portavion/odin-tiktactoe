@@ -72,9 +72,12 @@ const gameController = (function(board) {
     function play(board){
         while (gameEndandWinner[0] === 0){
             playTurn(player1, board);
-            display.endGame(gameEndandWinner)
-            playTurn(player2, board);
-            display.endGame(gameEndandWinner)
+            display.endGame(gameEndandWinner);
+            if (gameEndandWinner[0] === 0){
+                playTurn(player2, board);
+                display.endGame(gameEndandWinner);
+            }
+            
         }
     }
     return{play};
@@ -123,7 +126,6 @@ const checkEngine = (function() {
     function checkLine(board){
         for (let i = 0; i < 2; i++){
             if ((board[i][0]===board[i][1]) & (board[i][0]===board[i][2])){
-                console.log('line win');
                 return [1, board[i][0]];
             }
             else {
@@ -149,7 +151,6 @@ const checkEngine = (function() {
             return [1, board[1][1]];
         }
         else if ((board[0][2]===board[1][1]) & (board[0][2]===board[2][0]) & (board[1][1] != ' ')){
-            console.log('diag win');
             return [1, board[1][1]];
         }
         else{
@@ -159,7 +160,7 @@ const checkEngine = (function() {
 
     function checkDraw(board){
         if((board[0][0]===' ')||(board[0][1]===' ')||(board[0][1]===' ')){
-            return 0;
+            return [0, ' '];
         }
         else if((board[1][0]===' ')||(board[1][1]===' ')||(board[1][1]===' ')){
             return [0, ' '];
