@@ -1,6 +1,6 @@
 const board = (function () {
-    //const board = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']];
-    const board = [['p','p','o'],['a','b','c'],['d','e',' ']];
+    const board = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']];
+    //const board = [['p','p','o'],['a','b','c'],['d','e',' ']];
     const getBoard = () => board;
 
     function addCell(playerMark, playerChoice){
@@ -11,7 +11,6 @@ const board = (function () {
 
         return board;
     }
-
     return {getBoard, addCell};
 })();
 
@@ -37,11 +36,24 @@ const display = (function () {
         
         return[lineChoice, columnChoice];
     }
-
-    return{board, turnPrompt};
+    function endGame(gameEndandWinner){
+        if(gameEndandWinner[0]===1){
+            console.log("GAME OVER! " + gameEndandWinner[1] + " wins!");
+        }
+        else if(gameEndandWinner[0]===2){
+            console.log("GAME OVER! It's a draw!");
+        }
+    }
+    return{board, turnPrompt, endGame};
 })();
 
-const gameEngine = (function() {
+const gameController = (function(board) {
+    player1 = new player('Player 1', 'X');
+    player2 = new player('Player 2', 'O');
+
+    let gameEndandWinner = [0,' '];
+
+    //board = board.getBoard()
     
     function playTurn (player, board){
         let validChoice = 0;
@@ -49,62 +61,73 @@ const gameEngine = (function() {
 
         while (!validChoice){
             cellChoice = display.turnPrompt(player);
-            validChoice = checkChoice(cellChoice, board.getBoard());
+            validChoice = checkEngine.checkChoice(cellChoice, board.getBoard());
         }
 
         board.addCell(player.playerMark, cellChoice);
         display.board(board);
-        checkEngine(board.getBoard());
+        gameEndandWinner = checkEngine.checkGameEnd(board.getBoard());
     }
 
+    function play(board){
+        while (gameEndandWinner[0] === 0){
+            playTurn(player1, board);
+            display.endGame(gameEndandWinner)
+            playTurn(player2, board);
+            display.endGame(gameEndandWinner)
+        }
+    }
+    return{play};
+})();
+
+function player (name, playerMark) {
+    this.name = name;
+    this.playerMark = playerMark;
+}
+
+const checkEngine = (function() {
     function checkChoice(cellChoice, board){
         boardValue = board[cellChoice[0]][cellChoice[1]];
 
         if (boardValue != ' '){
-            console.log('wrong choice');
             return 0;
         }
 
         else {
-            console.log('valid choice');
             return 1;
         }
     }
 
-    function checkEngine(board){
+    function checkGameEnd(board){
         let gameOver = [0,' '];
 
         gameOver = checkLine(board);
 
-        if (gameOver[0] === undefined){
+        if (gameOver[0] === 0){
             gameOver = checkColumn(board);
         }
         //check diagonals
-        if (gameOver[0] === undefined){
+        if (gameOver[0] === 0){
             gameOver = checkDiagonal(board);
         }
 
         //check draw
-        if (gameOver[0]===undefined){
+        if (gameOver[0]===0){
             gameOver = checkDraw(board);
         }
-
-        if(gameOver[0]===1){
-            console.log("GAME OVER! " + gameOver[1] + " wins!");
-        }
-        else if(gameOver[0]===2){
-            console.log("GAME OVER! It's a draw!");
-        }
+        return gameOver;
+        
 
     }
 
     function checkLine(board){
         for (let i = 0; i < 2; i++){
             if ((board[i][0]===board[i][1]) & (board[i][0]===board[i][2])){
+                console.log('line win');
                 return [1, board[i][0]];
             }
             else {
-                return 0;
+                return [0, ' '];
             }
         }
     }
@@ -115,65 +138,45 @@ const gameEngine = (function() {
                 return [1, board[0][i]];
             }
             else {
-                return 0;
+                return [0, ' '];
             }
         }
     }
 
     function checkDiagonal(board){
         
-        if ((board[0][0]===board[1][1]) & (board[0][0]===board[2][2])){
+        if ((board[0][0]===board[1][1]) & (board[0][0]===board[2][2]) & (board[1][1] != ' ')){
             return [1, board[1][1]];
         }
-        else if ((board[0][2]===board[1][1]) & (board[0][2]===board[2][0])){
+        else if ((board[0][2]===board[1][1]) & (board[0][2]===board[2][0]) & (board[1][1] != ' ')){
+            console.log('diag win');
             return [1, board[1][1]];
         }
         else{
-            return 0;
+            return [0, ' '];
         }
     }
 
     function checkDraw(board){
-        console.log('check draw');
         if((board[0][0]===' ')||(board[0][1]===' ')||(board[0][1]===' ')){
             return 0;
         }
         else if((board[1][0]===' ')||(board[1][1]===' ')||(board[1][1]===' ')){
-            return 0;
+            return [0, ' '];
         }
         else if((board[2][0]===' ')||(board[2][1]===' ')||(board[2][1]===' ')){
-            return 0;
+            return [0, ' '];
         }
         else {
             return [2, ' '];
         }
     }
 
-    return{playTurn};
+    return {checkChoice, checkGameEnd};
 })();
 
-function player (name, playerMark) {
-    this.name = name;
-    this.playerMark = playerMark;
-}
 
-player1 = new player('Player 1', 'X');
-player2 = new player('Player 2', 'O');
+gameController.play(board);
 
-console.log('Start:')
-display.board(board);
-
-gameEngine.playTurn(player1, board);
-gameEngine.playTurn(player2, board);
-gameEngine.playTurn(player1, board);
-gameEngine.playTurn(player2, board);
-gameEngine.playTurn(player1, board);
-gameEngine.playTurn(player2, board);
-gameEngine.playTurn(player1, board);
-gameEngine.playTurn(player2, board);
-gameEngine.playTurn(player1, board);
-gameEngine.playTurn(player2, board);
-gameEngine.playTurn(player1, board);
-gameEngine.playTurn(player2, board);
 
 
