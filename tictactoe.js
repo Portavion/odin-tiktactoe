@@ -18,21 +18,28 @@ const display = (function () {
 
     function board(board){
         cells = board.getBoard();
-
-        console.log('---------------------------------')
+        boardContainer = document.querySelector('.boardContainer');
+        //console.log('---------------------------------')
 
         for (let i = 0; i < 3; i++){
-            console.log('|' + cells[i][0] + '|' + cells[i][1] + '|' + cells[i][2] + '|');
+            for (let j = 0; j < 3; j++){
+                const newCell = document.createElement('div');
+                newCell.className = 'cell';
+                const newCellText = document.createTextNode(cells[i][j]);
+                newCell.appendChild(newCellText);
+                boardContainer.appendChild(newCell);
+            }
+           // console.log('|' + cells[i][0] + '|' + cells[i][1] + '|' + cells[i][2] + '|');
         }
-
-        console.log('---------------------------------')
-
+        //console.log('---------------------------------')
     }
     function turnPrompt (player){
-        console.log("It's " + player.name + " turn to play. ");
+        //console.log("It's " + player.name + " turn to play. ");
+        playerContainer = document.querySelector('.playerDisplay');
+        playerContainer.textContent = `${player.name} turn to play.`
 
-        const lineChoice = prompt("Which line do you want to play (0/1/2): ");
-        const columnChoice = prompt("Which column do you want to play(0/1/2): ");
+        //const lineChoice = prompt("Which line do you want to play (0/1/2): ");
+        //const columnChoice = prompt("Which column do you want to play(0/1/2): ");
         
         return[lineChoice, columnChoice];
     }
@@ -52,8 +59,6 @@ const gameController = (function(board) {
     player2 = new player('Player 2', 'O');
 
     let gameEndandWinner = [0,' '];
-
-    //board = board.getBoard()
     
     function playTurn (player, board){
         let validChoice = 0;
@@ -70,6 +75,7 @@ const gameController = (function(board) {
     }
 
     function play(board){
+        display.board(board);
         while (gameEndandWinner[0] === 0){
             playTurn(player1, board);
             display.endGame(gameEndandWinner);
