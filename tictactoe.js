@@ -218,7 +218,7 @@ const checkEngine = (function() {
     }
 
     function checkDraw(board){
-        if((board[0][0]===' ')||(board[0][1]===' ')||(board[0][1]===' ')){
+        if((board[0][0]===' ')||(board[0][1]===' ')||(board[0][2]===' ')){
             return [0, ' '];
         }
         else if((board[1][0]===' ')||(board[1][1]===' ')||(board[1][2]===' ')){
