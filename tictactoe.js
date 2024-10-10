@@ -73,7 +73,7 @@ const display = (function () {
                 cells[2][2] = document.querySelector('.playerDisplay').id;
                 break;
         }     
-        
+
         gameController.play(board);
     }
 
@@ -85,10 +85,10 @@ const display = (function () {
 
     function endGame(gameEndandWinner){
         if(gameEndandWinner[0]===1){
-            console.log("GAME OVER! " + gameEndandWinner[1] + " wins!");
+            window.alert("GAME OVER! " + gameEndandWinner[1] + " wins!");
         }
         else if(gameEndandWinner[0]===2){
-            console.log("GAME OVER! It's a draw!");
+            window.alert("GAME OVER! It's a draw!");
         }
     }
     return{printBoard, turnPrompt, endGame};
@@ -103,18 +103,18 @@ const gameController = (function(board) {
     let gameEndandWinner = [0,' '];
     
     function playTurn (board){
-       //let validChoice = 0;
-       // let cellChoice ='';
         board.addCell(player.playerMark, cellChoice);
         display.board(board);
-        gameEndandWinner = checkEngine.checkGameEnd(board.getBoard());
     }
 
     function play(board){
-
+            gameEndandWinner = checkEngine.checkGameEnd(board.getBoard());
+        
         if (playerTurn === 1){
             display.printBoard(board);
             display.turnPrompt(player1);
+            display.endGame(gameEndandWinner);
+            
             playerTurn = 2;
         }
         else if (playerTurn === 0){
@@ -124,10 +124,12 @@ const gameController = (function(board) {
         }
         else {
             display.printBoard(board);
-
             display.turnPrompt(player2);
+            display.endGame(gameEndandWinner);
             playerTurn = 1;
         }
+        //
+
 
    /*     while (gameEndandWinner[0] === 0){
             //playTurn(player1, board);
