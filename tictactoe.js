@@ -223,10 +223,10 @@ const checkEngine = (function() {
         if((board[0][0]===' ')||(board[0][1]===' ')||(board[0][1]===' ')){
             return [0, ' '];
         }
-        else if((board[1][0]===' ')||(board[1][1]===' ')||(board[1][1]===' ')){
+        else if((board[1][0]===' ')||(board[1][1]===' ')||(board[1][2]===' ')){
             return [0, ' '];
         }
-        else if((board[2][0]===' ')||(board[2][1]===' ')||(board[2][1]===' ')){
+        else if((board[2][0]===' ')||(board[2][1]===' ')||(board[2][2]===' ')){
             return [0, ' '];
         }
         else {
