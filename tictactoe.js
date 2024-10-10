@@ -16,33 +16,73 @@ const board = (function () {
 
 const display = (function () {
 
-    function board(board){
+    function printBoard(board){
         cells = board.getBoard();
         boardContainer = document.querySelector('.boardContainer');
-        //console.log('---------------------------------')
-
+        boardContainer.innerHTML = '';
+        
+        let cellCount = 0;
         for (let i = 0; i < 3; i++){
+            
             for (let j = 0; j < 3; j++){
                 const newCell = document.createElement('div');
                 newCell.className = 'cell';
+                newCell.id = 'c'+ cellCount;
+
                 const newCellText = document.createTextNode(cells[i][j]);
+
                 newCell.appendChild(newCellText);
                 boardContainer.appendChild(newCell);
+                if (cells[i][j]===' '){
+                    document.querySelector(`#c${cellCount}`).addEventListener('click', updateCellClick);
+                }
+                cellCount ++;
             }
-           // console.log('|' + cells[i][0] + '|' + cells[i][1] + '|' + cells[i][2] + '|');
         }
-        //console.log('---------------------------------')
     }
-    function turnPrompt (player){
-        //console.log("It's " + player.name + " turn to play. ");
-        playerContainer = document.querySelector('.playerDisplay');
-        playerContainer.textContent = `${player.name} turn to play.`
 
-        //const lineChoice = prompt("Which line do you want to play (0/1/2): ");
-        //const columnChoice = prompt("Which column do you want to play(0/1/2): ");
+    function updateCellClick (event){
+        cellChoice = event.target.id;
+        document.querySelector(`#${cellChoice}`).textContent = document.querySelector('.playerDisplay').id;
+        switch (cellChoice) {
+            case 'c0':
+                cells[0][0] = document.querySelector('.playerDisplay').id;
+                break;
+            case 'c1':
+                cells[0][1] = document.querySelector('.playerDisplay').id;
+                break;
+            case 'c2':
+                cells[0][2] = document.querySelector('.playerDisplay').id;
+                break;
+            case 'c3':
+                cells[1][0] = document.querySelector('.playerDisplay').id;
+                break;
+            case 'c4':
+                cells[1][1] = document.querySelector('.playerDisplay').id;
+                break;
+            case 'c5':
+                cells[1][2] = document.querySelector('.playerDisplay').id;
+                break;
+            case 'c6':
+                cells[2][0] = document.querySelector('.playerDisplay').id;
+                break;
+            case 'c7':
+                cells[2][1] = document.querySelector('.playerDisplay').id;
+                break;
+            case 'c8':
+                cells[2][2] = document.querySelector('.playerDisplay').id;
+                break;
+        }     
         
-        return[lineChoice, columnChoice];
+        gameController.play(board);
     }
+
+    function turnPrompt (player){
+        playerDisplay = document.querySelector('.playerDisplay')
+        playerDisplay.id = player.playerMark;
+        playerDisplay.textContent = `It's ${player.name}'s turn to play`;
+    }
+
     function endGame(gameEndandWinner){
         if(gameEndandWinner[0]===1){
             console.log("GAME OVER! " + gameEndandWinner[1] + " wins!");
@@ -51,42 +91,55 @@ const display = (function () {
             console.log("GAME OVER! It's a draw!");
         }
     }
-    return{board, turnPrompt, endGame};
+    return{printBoard, turnPrompt, endGame};
 })();
 
 const gameController = (function(board) {
     player1 = new player('Player 1', 'X');
     player2 = new player('Player 2', 'O');
 
+    playerTurn = 0;
+
     let gameEndandWinner = [0,' '];
     
-    function playTurn (player, board){
-        let validChoice = 0;
-        let cellChoice ='';
-
-        while (!validChoice){
-            cellChoice = display.turnPrompt(player);
-            validChoice = checkEngine.checkChoice(cellChoice, board.getBoard());
-        }
-
+    function playTurn (board){
+       //let validChoice = 0;
+       // let cellChoice ='';
         board.addCell(player.playerMark, cellChoice);
         display.board(board);
         gameEndandWinner = checkEngine.checkGameEnd(board.getBoard());
     }
 
     function play(board){
-        display.board(board);
-        while (gameEndandWinner[0] === 0){
-            playTurn(player1, board);
+
+        if (playerTurn === 1){
+            display.printBoard(board);
+            display.turnPrompt(player1);
+            playerTurn = 2;
+        }
+        else if (playerTurn === 0){
+            display.printBoard(board);
+            display.turnPrompt(player1);
+            playerTurn = 2;
+        }
+        else {
+            display.printBoard(board);
+
+            display.turnPrompt(player2);
+            playerTurn = 1;
+        }
+
+   /*     while (gameEndandWinner[0] === 0){
+            //playTurn(player1, board);
             display.endGame(gameEndandWinner);
             if (gameEndandWinner[0] === 0){
                 playTurn(player2, board);
                 display.endGame(gameEndandWinner);
-            }
+            } 
             
-        }
+        }*/
     }
-    return{play};
+    return{play, playTurn};
 })();
 
 function player (name, playerMark) {
